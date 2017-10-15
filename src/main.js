@@ -1,4 +1,6 @@
-import React from 'react';
-import { render } from 'react-dom';
+import React from 'react'
+import { render } from 'react-dom'
 
-render(<div>Hello. Woorrrrrld.</div>, document.getElementById('root'));
+import Session from './Session'
+
+render(<Session />, document.getElementById('root'))
