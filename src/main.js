@@ -1,6 +1,6 @@
 import React from 'react'
 import { render } from 'react-dom'
 
-import Session from './Session'
+import App from './App'
 
-render(<Session />, document.getElementById('root'))
+render(<App />, document.getElementById('root'))

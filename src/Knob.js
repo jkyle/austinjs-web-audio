@@ -24,7 +24,7 @@ export default class Knob extends Component {
     const offset = location - this.dragStart
     const newVal =
       this.initialValue - offset / (300 / (this.props.max - this.props.min))
-    const clampedValue = newVal
+    const clampedValue = Math.ceil(newVal / this.props.step) * this.props.step
     this.props.onChange(clampedValue > this.props.max
       ? this.props.max
       : clampedValue < this.props.min ? this.props.min : clampedValue, )
@@ -40,7 +40,7 @@ export default class Knob extends Component {
     } = this.props
     return (
       <div className={style.knobWrapper}>
-        <h4 className={style.value}>{value.toFixed(2)}</h4>
+        <h4 className={style.value}>{step >= 1 ? value : value.toFixed(2)}</h4>
         <div className={style.visuallyHidden}>
           <input ref={(input) => {
               this.input = input
