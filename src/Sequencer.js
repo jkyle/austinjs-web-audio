@@ -2,12 +2,27 @@ import React from 'react'
 import makeDevice from './Generic'
 import Knob from './Knob'
 
+import { freqFromRoot } from './music-math'
+
 const Sequencer = () => {
-  const steps = [110, 220, 440, 880]
+  const steps = [
+    110,
+    freqFromRoot(110, 12),
+    freqFromRoot(110, 5),
+    freqFromRoot(110, 7),
+  ]
   let idx = 0
 
   const gate = {
     value: 0.2,
+  }
+
+  const tempo = {
+    value: 1,
+  }
+
+  const registerTempo = (newTempo) => {
+    tempo.value = newTempo
   }
 
   const listeners = []
@@ -19,7 +34,7 @@ const Sequencer = () => {
   const trigger = (time) => {
     observers
       .map(obs => obs.start(time, steps[idx]))
-      .map(stop => stop(time + gate.value))
+      .map(stop => stop(time + gate.value * (tempo.value / 60)))
     idx = (idx + 1) % steps.length
   }
 
@@ -34,6 +49,7 @@ const Sequencer = () => {
     trigger,
     gate,
     onGateChange,
+    registerTempo,
   }
 }
 

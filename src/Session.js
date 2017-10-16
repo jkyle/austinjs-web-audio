@@ -20,6 +20,7 @@ const osc = MultiOsc(context)
 const analyser = Analyser(context)
 
 clock.addObserver(sequencer)
+clock.register(sequencer.registerTempo)
 sequencer.addObserver(osc)
 
 keyboard.register(osc)
