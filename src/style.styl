@@ -3,6 +3,10 @@ div {
   font-family: 'Josefin Sans', sans-serif;
 }
 
+body {
+  background: #de72f9
+}
+
 .select {
   border: none
   background: none
@@ -19,21 +23,24 @@ div {
 }
 
 .label {
-  text-transform: uppercase
+  text-transform: uppercase;
+  display: block;
+  margin: 0.5rem 0 0;
 }
 
 .component, .device {
-  // border: 1px solid #f046d4
+  // border: 1px solid rgb(240, 70, 212)
   background: #b2d3e0
   border-radius: 0.2rem;
   padding: 1rem;
   margin: 0.25rem;
   text-align: center;
+  box-shadow: 0.25rem 0.2rem 0 #74bbf6
 }
 
 .value {
   font-size: 1.3rem;
-  margin: 0;
+  margin: 0.25rem 0;
 }
 
 .visuallyHidden {
@@ -61,4 +68,5 @@ div {
 
 .components {
   display: flex;
+  justify-content: space-between;
 }

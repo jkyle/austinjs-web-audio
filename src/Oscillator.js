@@ -3,8 +3,10 @@ import style from './style.styl'
 import makeDevice from './Generic'
 import Knob from './Knob'
 
-const Oscillator = (context, type = 'sine') => {
+const Oscillator = (context, type = 'sine', adsr) => {
   const listeners = []
+  const register = listener => listeners.push(listener)
+
   const gain = context.createGain()
   const oscType = {
     value: type,
@@ -20,17 +22,19 @@ const Oscillator = (context, type = 'sine') => {
     listeners.forEach(listener => listener())
   }
 
-  const register = listener => listeners.push(listener)
-
   const start = (startTime, frequency = 440) => {
     const osc = context.createOscillator()
-    osc.connect(gain)
+    const tmpGain = context.createGain()
+    osc.connect(tmpGain)
+    tmpGain.connect(gain)
     osc.frequency.value = frequency
     osc.type = oscType.value
     osc.start(startTime)
+    const adsrStop = adsr.addParam(tmpGain.gain).start(startTime)
 
     return (stopTime) => {
-      osc.stop(stopTime)
+      adsrStop(stopTime)
+      osc.stop(stopTime + adsr.env.r)
     }
   }
 
@@ -57,7 +61,12 @@ const OscillatorDOM = makeDevice(({ device }) => (
       <option value="sawtooth">Sawtooth</option>
       <option value="triangle">Triangle</option>
     </select>
-    <Knob min={0} max={1} step={0.02} value={device.gain.gain.value} onChange={device.onChangeGain} />
+    <Knob min={0}
+      max={1}
+      step={0.02}
+      value={device.gain.gain.value}
+      onChange={device.onChangeGain}
+    />
   </div>
 ))
 

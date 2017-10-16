@@ -6,12 +6,13 @@ import Knob from './Knob'
 const LFO = (context) => {
   const listeners = []
   const gain = context.createGain()
+  gain.gain.value = 0
   let osc
   const oscType = {
     value: 'sine',
   }
   const oscFrequency = {
-    value: 0.5,
+    value: 0,
   }
 
   const onChangeType = (value) => {

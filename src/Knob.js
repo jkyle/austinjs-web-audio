@@ -24,9 +24,10 @@ export default class Knob extends Component {
     const offset = location - this.dragStart
     const newVal =
       this.initialValue - offset / (300 / (this.props.max - this.props.min))
-    this.props.onChange(newVal > this.props.max
+    const clampedValue = newVal
+    this.props.onChange(clampedValue > this.props.max
       ? this.props.max
-      : newVal < this.props.min ? this.props.min : newVal, )
+      : clampedValue < this.props.min ? this.props.min : clampedValue, )
   }
 
   stopDrag() {
@@ -58,7 +59,7 @@ export default class Knob extends Component {
           }}
           className={style.knob}
           style={{
-            transform: `rotateZ(${value / (max - min) * 270 - 135}deg)`,
+            transform: `rotateZ(${(value - min) / (max - min) * 270 - 135}deg)`,
           }}
         />
         <label htmlFor={label} className={style.label}>
