@@ -34,7 +34,7 @@ const Sequencer = () => {
   const trigger = (time) => {
     observers
       .map(obs => obs.start(time, steps[idx]))
-      .map(stop => stop(time + gate.value * (tempo.value / 60)))
+      .map(osc => osc.stop(time + gate.value * (tempo.value / 60)))
     idx = (idx + 1) % steps.length
   }
 

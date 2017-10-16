@@ -32,9 +32,12 @@ const Oscillator = (context, type = 'sine', adsr) => {
     osc.start(startTime)
     const adsrStop = adsr.addParam(tmpGain.gain).start(startTime)
 
-    return (stopTime) => {
-      adsrStop(stopTime)
-      osc.stop(stopTime + adsr.env.r)
+    return {
+      stop: (stopTime, onEnd) => {
+        osc.onended = () => onEnd()
+        adsrStop(stopTime)
+        osc.stop(stopTime + adsr.env.r)
+      },
     }
   }
 

@@ -63,7 +63,7 @@ const LFO = (context) => {
   }
 }
 
-const LFODOM = makeDevice(({ device }) => (
+const LFODOM = makeDevice(({ device, min = 0, max = 1 }) => (
   <div>
     <select className={style.select}
       value={device.oscType.value}
@@ -84,8 +84,8 @@ const LFODOM = makeDevice(({ device }) => (
       onChange={device.onChangeFrequency}
     />
     <Knob label="depth"
-      min={0}
-      max={1}
+      min={min}
+      max={max}
       step={0.02}
       value={device.gain.gain.value}
       onChange={device.onChangeGain}

@@ -24,17 +24,18 @@ clock.register(sequencer.registerTempo)
 sequencer.addObserver(osc)
 
 keyboard.register(osc)
-const lfo = LFO(context)
-lfo.gain.connect(osc.mainGain.gain)
-lfo.start(context.currentTime, 2)
 const delay = Delay(context)
-
 delay.out.connect(context.destination)
 osc.mainGain.connect(filter.filter)
+
+const lfo = LFO(context)
+lfo.gain.connect(filter.filter.frequency)
+lfo.start(context.currentTime, 2)
+
 filter.filter.connect(delay.delay)
 filter.filter.connect(distortion.shaper)
 distortion.shaper.connect(context.destination)
-osc.mainGain.connect(analyser.analyser)
+filter.filter.connect(analyser.analyser)
 
 export default class Song extends Component {
   play = () => {
@@ -62,7 +63,7 @@ export default class Song extends Component {
         </Device>
 
         <Device name="LFO">
-          <LFODOM device={lfo} />
+          <LFODOM device={lfo} min={0} max={1000} />
         </Device>
 
         <Device name="Filter">

@@ -9,7 +9,11 @@ const MultiOsc = (context) => {
   const listeners = []
   const register = listener => listeners.push(listener)
   const mainGain = context.createGain()
-  mainGain.gain.value = 0.5
+  const compGain = context.createGain()
+  compGain.connect(mainGain)
+  let noteCount = 0
+
+  mainGain.gain.value = 0.8
   const adsr = ADSR(
     {
       a: 0.02,
@@ -25,9 +29,9 @@ const MultiOsc = (context) => {
   const osc3 = Oscillator(context, 'triangle', adsr)
   const metalizer = Oscillator(context, 'triangle', adsr)
 
-  osc1.gain.connect(mainGain)
-  osc2.gain.connect(mainGain)
-  osc3.gain.connect(mainGain)
+  osc1.gain.connect(compGain)
+  osc2.gain.connect(compGain)
+  osc3.gain.connect(compGain)
   metalizer.gain.connect(osc3.gain)
   metalizer.gain.gain.value = 0
 
@@ -47,13 +51,22 @@ const MultiOsc = (context) => {
   }
 
   const start = (startTime, frequency = 440) => {
+    noteCount += 4
+    compGain.gain.value = 0.8 / noteCount
     const oscs = [
       osc1.start(startTime, frequency),
       osc2.start(startTime, frequency),
       osc3.start(startTime, frequency),
       metalizer.start(startTime, frequency * 4),
     ]
-    return stopTime => oscs.forEach(stop => stop(stopTime))
+    return {
+      stop: stopTime =>
+        oscs.forEach(osc =>
+          osc.stop(stopTime, () => {
+            noteCount -= 1
+            compGain.gain.value = noteCount > 1 ? 0.8 / noteCount : 0.8 / 1
+          }), ),
+    }
   }
 
   return {
