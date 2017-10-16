@@ -2,9 +2,10 @@ import React from 'react'
 import style from './style.styl'
 import makeDevice from './Generic'
 import Knob from './Knob'
+import eventBus from './event-bus'
 
 const LFO = (context) => {
-  const listeners = []
+  const events = eventBus()
   const gain = context.createGain()
   gain.gain.value = 0
   let osc
@@ -20,7 +21,7 @@ const LFO = (context) => {
     if (osc) {
       osc.type = value
     }
-    listeners.forEach(listener => listener())
+    events.trigger(value)
   }
 
   const onChangeFrequency = (value) => {
@@ -28,15 +29,13 @@ const LFO = (context) => {
     if (osc) {
       osc.frequency.value = value
     }
-    listeners.forEach(listener => listener())
+    events.trigger(value)
   }
 
   const onChangeGain = (value) => {
     gain.gain.value = value
-    listeners.forEach(listener => listener())
+    events.trigger(value)
   }
-
-  const register = listener => listeners.push(listener)
 
   const start = (startTime, frequency = 440) => {
     osc = context.createOscillator()
@@ -59,7 +58,7 @@ const LFO = (context) => {
     onChangeFrequency,
     oscType,
     oscFrequency,
-    register,
+    register: events.listen,
   }
 }
 
@@ -78,7 +77,7 @@ const LFODOM = makeDevice(({ device, min = 0, max = 1 }) => (
     </select>
     <Knob label="rate"
       min={0}
-      max={30}
+      max={20}
       step={0.02}
       value={device.oscFrequency.value}
       onChange={device.onChangeFrequency}

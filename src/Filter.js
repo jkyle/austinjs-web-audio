@@ -5,7 +5,7 @@ import Knob from './Knob'
 import eventBus from './event-bus'
 
 const Filter = (context, type = 'highpass') => {
-  const events = eventBus
+  const events = eventBus()
   const filter = context.createBiquadFilter()
   filter.type = type
 

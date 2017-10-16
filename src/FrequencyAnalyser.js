@@ -52,12 +52,6 @@ class FrequencyAnalyserDOM extends React.Component {
     return (
       <div>
         <canvas ref={(canvas) => {
-            this.canvas = canvas
-          }}
-          width={300}
-          height={300}
-        />
-        <canvas ref={(canvas) => {
             this.fcanvas = canvas
           }}
           width={300}
