@@ -2,41 +2,55 @@ import React from 'react'
 import style from './style.styl'
 import makeDevice from './Generic'
 import Knob from './Knob'
+import eventBus from './event-bus'
 
-const ADSR = (
-  env = {
-    a: 0.02,
-    d: 0,
-    s: 1,
-    r: 0.02,
-  },
-  scale = 0.8,
-) => {
-  const listeners = []
-  const register = listener => listeners.push(listener)
+const ADSR = (env = {
+  a: 0.02,
+  d: 0,
+  s: 1,
+  r: 0.02,
+}, ) => {
+  const events = eventBus()
   const onEnvChange = (param, value) => {
     env[param] = value
-    listeners.forEach(listener => listener(value))
+    events.trigger(value)
   }
 
   return {
-    register,
+    register: events.listen,
     onEnvChange,
     env,
-    addParam: (param) => {
+    addParam: (param, scale = 0.8, initialOffset = 0) => {
+      const offset = {
+        value: initialOffset,
+      }
+      const onChangeOffset = (value) => {
+        offset.value = value
+      }
+
       const start = (startTime) => {
-        param.setValueAtTime(0.002, startTime)
-        param.exponentialRampToValueAtTime(scale, startTime + env.a)
+        param.setValueAtTime(offset.value + 0.002, startTime)
         param.exponentialRampToValueAtTime(
-          scale * env.s,
+          offset.value + scale,
+          startTime + env.a,
+        )
+        param.exponentialRampToValueAtTime(
+          offset.value + scale * env.s,
           startTime + env.a + env.d,
         )
 
-        return stopTime =>
-          param.exponentialRampToValueAtTime(0.002, stopTime + env.r)
+        return {
+          stop: stopTime =>
+            param.exponentialRampToValueAtTime(
+              offset.value + 0.002,
+              stopTime + env.r,
+            ),
+        }
       }
+
       return {
         start,
+        onChangeOffset,
       }
     },
   }
