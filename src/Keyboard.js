@@ -1,28 +1,28 @@
 import React, { Component } from 'react'
 import style from './style.styl'
-import makeDevice from './Generic'
-import Knob from './Knob'
 
 import { freqFromRoot } from './music-math'
 
-const topRow = 'qwertyuiop'
-  .split('')
-  .reduce((acc, letter, idx) => ({ ...acc, [letter]: idx + 5 }), {})
-const middleRow = 'asdfghjkl'
-  .split('')
-  .reduce((acc, letter, idx) => ({ ...acc, [letter]: idx }), {})
-const bottomRow = 'zxcvbnm'
-  .split('')
-  .reduce((acc, letter, idx) => ({ ...acc, [letter]: idx - 7 }), {})
-
-const keyToFreq = { ...topRow, ...middleRow, ...bottomRow }
+// const topRow = 'qwertyuiop'
+//   .split('')
+//   .reduce((acc, letter, idx) => ({ ...acc, [letter]: idx + 5 }), {})
+// const middleRow = 'asdfghjkl'
+//   .split('')
+//   .reduce((acc, letter, idx) => ({ ...acc, [letter]: idx }), {})
+// const bottomRow = 'zxcvbnm'
+//   .split('')
+//   .reduce((acc, letter, idx) => ({ ...acc, [letter]: idx - 7 }), {})
+//
+// const keyToFreq = { ...topRow, ...middleRow, ...bottomRow }
 
 const Keyboard = (context) => {
   const listeners = []
   const activeNotes = {}
+
   const triggerNoteStart = (note) => {
     if (!(note in activeNotes)) {
-      const freq = note in keyToFreq ? freqFromRoot(440, keyToFreq[note]) : 0
+      const freq = 440
+      // const freq = note in keyToFreq ? freqFromRoot(440, keyToFreq[note]) : 0
       activeNotes[note] = listeners.map(listener =>
         listener.start(context.currentTime, freq), )
     }
