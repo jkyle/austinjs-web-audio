@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import style from './style.styl'
+import eventBus from './event-bus'
 
 import { freqFromRoot } from './music-math'
 
@@ -16,15 +17,14 @@ import { freqFromRoot } from './music-math'
 // const keyToFreq = { ...topRow, ...middleRow, ...bottomRow }
 
 const Keyboard = (context) => {
-  const listeners = []
+  const events = eventBus()
   const activeNotes = {}
 
   const triggerNoteStart = (note) => {
     if (!(note in activeNotes)) {
       const freq = 440
       // const freq = note in keyToFreq ? freqFromRoot(440, keyToFreq[note]) : 0
-      activeNotes[note] = listeners.map(listener =>
-        listener.start(context.currentTime, freq), )
+      activeNotes[note] = events.trigger(context.currentTime, freq)
     }
   }
 
@@ -37,7 +37,7 @@ const Keyboard = (context) => {
   }
 
   return {
-    register: listener => listeners.push(listener),
+    register: events.listen,
     keyDown: note => triggerNoteStart(note),
     keyUp: note => triggerNoteStop(note),
   }

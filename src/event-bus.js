@@ -4,6 +4,7 @@ export default () => {
     listen: (listener) => {
       listeners.push(listener)
     },
-    trigger: value => listeners.forEach(listener => listener(value)),
+    trigger: (...args) => listeners.map(listener => listener(...args)),
+    listeners,
   }
 }
