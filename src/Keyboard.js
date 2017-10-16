@@ -4,17 +4,17 @@ import eventBus from './event-bus'
 
 import { freqFromRoot } from './music-math'
 
-// const topRow = 'qwertyuiop'
-//   .split('')
-//   .reduce((acc, letter, idx) => ({ ...acc, [letter]: idx + 5 }), {})
-// const middleRow = 'asdfghjkl'
-//   .split('')
-//   .reduce((acc, letter, idx) => ({ ...acc, [letter]: idx }), {})
-// const bottomRow = 'zxcvbnm'
-//   .split('')
-//   .reduce((acc, letter, idx) => ({ ...acc, [letter]: idx - 7 }), {})
-//
-// const keyToFreq = { ...topRow, ...middleRow, ...bottomRow }
+const topRow = 'qwertyuiop'
+  .split('')
+  .reduce((acc, letter, idx) => ({ ...acc, [letter]: idx }), {})
+const middleRow = 'asdfghjkl'
+  .split('')
+  .reduce((acc, letter, idx) => ({ ...acc, [letter]: idx - 12 }), {})
+const bottomRow = 'zxcvbnm'
+  .split('')
+  .reduce((acc, letter, idx) => ({ ...acc, [letter]: idx - 24 }), {})
+
+const keyToFreq = { ...topRow, ...middleRow, ...bottomRow }
 
 const Keyboard = (context) => {
   const events = eventBus()
@@ -22,8 +22,8 @@ const Keyboard = (context) => {
 
   const triggerNoteStart = (note) => {
     if (!(note in activeNotes)) {
-      const freq = 440
-      // const freq = note in keyToFreq ? freqFromRoot(440, keyToFreq[note]) : 0
+      // const freq = 440
+      const freq = note in keyToFreq ? freqFromRoot(440, keyToFreq[note]) : 0
       activeNotes[note] = events.trigger(context.currentTime, freq)
     }
   }
