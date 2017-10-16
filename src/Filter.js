@@ -2,37 +2,33 @@ import React from 'react'
 import style from './style.styl'
 import makeDevice from './Generic'
 import Knob from './Knob'
+import eventBus from './event-bus'
 
-const Filter = (context, type = 'lowpass') => {
-  const listeners = []
+const Filter = (context, type = 'highpass') => {
+  const events = eventBus
   const filter = context.createBiquadFilter()
   filter.type = type
-  // const filterType = {
-  //   value: type,
-  // }
 
   const onChangeType = (value) => {
     filter.type = value
-    listeners.forEach(listener => listener())
+    events.trigger(value)
   }
 
   const onChangeFrequency = (value) => {
     filter.frequency.value = value
-    listeners.forEach(listener => listener())
+    events.trigger(value)
   }
 
   const onChangeQ = (value) => {
     filter.Q.value = value
-    listeners.forEach(listener => listener())
+    events.trigger(value)
   }
-
-  const register = listener => listeners.push(listener)
 
   return {
     onChangeType,
     onChangeFrequency,
     onChangeQ,
-    register,
+    register: events.listen,
     filter,
   }
 }
