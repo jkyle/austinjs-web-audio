@@ -53,7 +53,7 @@ const FilterDOM = makeDevice(({ device }) => (
       label="FRQ"
     />
     <Knob min={0}
-      max={12}
+      max={24}
       step={0.02}
       value={device.filter.Q.value}
       onChange={device.onChangeQ}
