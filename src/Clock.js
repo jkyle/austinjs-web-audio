@@ -16,7 +16,7 @@ const Clock = (context, defaultTempo = 120) => {
     value: defaultTempo,
   }
 
-  const scheduleAheadTime = 0.1
+  const scheduleAheadTime = 0.2
   let currentNote = 0
   let nextNoteTime = 0.01
   let interval
