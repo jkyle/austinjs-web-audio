@@ -19,6 +19,8 @@ const filter = Filter(context)
 const osc = MultiOsc(context)
 const lfo = LFO(context)
 lfo.start(context.currentTime)
+const delayLFO = LFO(context)
+delayLFO.start(context.currentTime)
 
 const gain = context.createGain()
 const distortion = Distortion(context)
@@ -30,6 +32,7 @@ keyboard.register(detune.start)
 
 const delay = Delay(context)
 delay.out.connect(distortion.shaper)
+delayLFO.gain.connect(delay.delay.delayTime)
 
 osc.gain.connect(filter.filter)
 filter.filter.connect(delay.input)
@@ -62,6 +65,9 @@ export default () => (
     </Device>
     <Device name="LFO">
       <LFODOM device={lfo} max={500} />
+    </Device>
+    <Device name="LFO">
+      <LFODOM device={delayLFO} max={1} />
     </Device>
     <Device name="Filter">
       <FilterDOM device={filter} />
