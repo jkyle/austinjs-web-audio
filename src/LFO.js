@@ -4,16 +4,16 @@ import makeDevice from './Generic'
 import Knob from './Knob'
 import eventBus from './event-bus'
 
-const LFO = (context) => {
+const LFO = (context, initialFrequency = 0, initialRate = 0) => {
   const events = eventBus()
   const gain = context.createGain()
-  gain.gain.value = 0
+  gain.gain.value = initialRate
   let osc
   const oscType = {
     value: 'sine',
   }
   const oscFrequency = {
-    value: 0,
+    value: initialFrequency,
   }
 
   const onChangeType = (value) => {

@@ -4,10 +4,17 @@ import makeDevice from './Generic'
 import Knob from './Knob'
 import eventBus from './event-bus'
 
-const Filter = (context, type = 'highpass') => {
+const Filter = (
+  context,
+  type = 'highpass',
+  initFrequency = 20,
+  initialQ = 0,
+) => {
   const events = eventBus()
   const filter = context.createBiquadFilter()
   filter.type = type
+  filter.frequency.value = initFrequency
+  filter.Q.value = initialQ
 
   const onChangeType = (value) => {
     filter.type = value

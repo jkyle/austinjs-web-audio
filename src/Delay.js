@@ -4,7 +4,7 @@ import makeDevice from './Generic'
 import Knob from './Knob'
 import eventBus from './event-bus'
 
-const Delay = (context, time = 0, feedbackAmout = 0) => {
+const Delay = (context, time = 0, feedbackAmout = 0, mix = 0) => {
   const events = eventBus()
 
   const delay = context.createDelay()
@@ -18,8 +18,8 @@ const Delay = (context, time = 0, feedbackAmout = 0) => {
   const wet = context.createGain()
   const out = context.createGain()
 
-  dry.gain.value = 1
-  wet.gain.value = 0
+  dry.gain.value = 1 - mix
+  wet.gain.value = mix
 
   dry.connect(out)
   wet.connect(out)

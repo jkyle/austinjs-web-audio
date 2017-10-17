@@ -9,6 +9,7 @@ const Sequencer = (
   context,
   initialRoot = 110,
   initialSequence = [0, 12, 5, 19, 7, 24, 0, 5],
+  initialGate = 1,
 ) => {
   const events = eventBus()
   const noteOn = eventBus()
@@ -28,7 +29,7 @@ const Sequencer = (
   let idx = 0
 
   const gate = {
-    value: 0.2,
+    value: initialGate,
   }
 
   const tempo = {

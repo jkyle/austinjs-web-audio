@@ -18,12 +18,12 @@ function makeDistortionCurve(amount) {
   return curve
 }
 
-const Distortion = (context) => {
+const Distortion = (context, amount = 0) => {
   const events = eventBus()
   const shaper = context.createWaveShaper()
 
   const dist = {
-    value: 0,
+    value: amount,
   }
 
   const onChangeDistortion = (value) => {

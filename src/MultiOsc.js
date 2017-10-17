@@ -6,23 +6,32 @@ import Knob from './Knob'
 import eventBus from './event-bus'
 import ADSR, { ADSRDOM } from './ADSR'
 
-const MultiOsc = (context) => {
+const MultiOsc = (
+  context,
+  square = 1,
+  sawtooth = 1,
+  triangle = 1,
+  env = {
+    a: 0.02,
+    d: 0,
+    s: 1,
+    r: 0.02,
+  },
+) => {
   const events = eventBus()
 
   const gain = context.createGain()
 
   gain.gain.value = 0.3
 
-  const adsr = ADSR({
-    a: 0.02,
-    d: 0,
-    s: 1,
-    r: 0.02,
-  })
+  const adsr = ADSR(env)
 
   const osc1 = Oscillator(context, 'square', adsr)
+  osc1.gain.gain.value = square
   const osc2 = Oscillator(context, 'sawtooth', adsr)
+  osc2.gain.gain.value = sawtooth
   const osc3 = Oscillator(context, 'triangle', adsr)
+  osc3.gain.gain.value = triangle
 
   osc1.gain.connect(gain)
   osc2.gain.connect(gain)

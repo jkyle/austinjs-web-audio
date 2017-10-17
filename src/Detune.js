@@ -6,22 +6,26 @@ import Knob from './Knob'
 import eventBus from './event-bus'
 import ADSR, { ADSRDOM } from './ADSR'
 
-const Detune = (context) => {
+const Detune = (
+  context,
+  initDetune = 1.5,
+  env = {
+    a: 0.02,
+    d: 0,
+    s: 1,
+    r: 0.02,
+  },
+) => {
   const events = eventBus()
   const gain = context.createGain()
 
   gain.gain.value = 0.3
 
   const detune = {
-    value: 0,
+    value: initDetune,
   }
 
-  const adsr = ADSR({
-    a: 0.02,
-    d: 0,
-    s: 1,
-    r: 0.02,
-  })
+  const adsr = ADSR(env)
 
   const osc1 = Oscillator(context, 'sawtooth', adsr)
   const osc2 = Oscillator(context, 'sawtooth', adsr)
