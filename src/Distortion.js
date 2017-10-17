@@ -18,9 +18,24 @@ function makeDistortionCurve(amount) {
   return curve
 }
 
-const Distortion = (context, amount = 0) => {
+const Distortion = (context, amount = 0, mix = 0) => {
   const events = eventBus()
   const shaper = context.createWaveShaper()
+
+  const dry = context.createGain()
+  const input = context.createGain()
+  const wet = context.createGain()
+  const out = context.createGain()
+
+  dry.gain.value = 1 - mix
+  wet.gain.value = mix
+
+  dry.connect(out)
+  wet.connect(out)
+
+  shaper.connect(wet)
+  input.connect(dry)
+  input.connect(shaper)
 
   const dist = {
     value: amount,
@@ -32,11 +47,21 @@ const Distortion = (context, amount = 0) => {
     events.trigger(value)
   }
 
+  const onGainChange = (value) => {
+    dry.gain.value = 1 - value
+    wet.gain.value = value
+    events.trigger(value)
+  }
+
   return {
     onChangeDistortion,
     register: events.listen,
     dist,
     shaper,
+    input,
+    out,
+    wet,
+    onGainChange,
   }
 }
 
@@ -48,6 +73,13 @@ const DistortionDOM = makeDevice(({ device }) => (
       value={device.dist.value}
       onChange={device.onChangeDistortion}
       label="DIST"
+    />
+    <Knob label="mix"
+      min={0}
+      max={1}
+      step={0.02}
+      value={device.wet.gain.value}
+      onChange={value => device.onGainChange(value)}
     />
   </div>
 ))

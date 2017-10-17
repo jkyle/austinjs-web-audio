@@ -24,8 +24,8 @@ const lfo = LFO(context, 0.2, 300)
 lfo.start(context.currentTime)
 
 mixer.master.connect(context.destination)
-const distortion = Distortion(context, Math.floor(range(0, 50)))
-distortion.shaper.connect(mixer.input2)
+const distortion = Distortion(context, Math.floor(range(0, 50)), range(0, 1))
+distortion.out.connect(mixer.input2)
 
 const delay = Delay(context, range(0.2, 0.8), range(0.2, 0.8), range(0, 0.2))
 delay.out.connect(mixer.input1)
@@ -34,7 +34,7 @@ const detune = Detune(context)
 detune.gain.connect(delay.input)
 
 osc.gain.connect(filter.filter)
-filter.filter.connect(distortion.shaper)
+filter.filter.connect(distortion.input)
 lfo.gain.connect(filter.filter.frequency)
 
 const clock = Clock(context)
