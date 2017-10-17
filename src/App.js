@@ -21,13 +21,13 @@ lfo.start(context.currentTime)
 
 mixer.master.connect(context.destination)
 const distortion = Distortion(context)
-distortion.shaper.connect(mixer.input2)
+distortion.out.connect(mixer.input2)
 
 const detune = Detune(context)
 detune.gain.connect(mixer.input1)
 
 const delay = Delay(context, 0.2, 0.8, 0.5)
-delay.out.connect(distortion.shaper)
+delay.out.connect(distortion.input)
 
 osc.gain.connect(filter.filter)
 filter.filter.connect(delay.input)
