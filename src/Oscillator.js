@@ -16,12 +16,13 @@ const Oscillator = (context, type = 'sine', adsr) => {
   }
 
   // Trigger oscillator start. Optionally pass in frequency.
-  const start = (startTime, frequency = 440) => {
+  const start = (startTime, frequency = 440, detune = 0) => {
     const osc = context.createOscillator()
     const tmpGain = context.createGain()
     osc.connect(tmpGain)
     tmpGain.connect(gain)
     osc.frequency.value = frequency
+    osc.detune.value = detune
     osc.type = oscType.value
     osc.start(startTime)
 
