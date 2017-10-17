@@ -1,13 +1,12 @@
 import React from 'react'
 import makeDevice from './Generic'
 import Knob from './Knob'
+import eventBus from './event-bus'
 
 const Clock = (context, defaultTempo = 120) => {
-  const listeners = []
-  const register = listener => listeners.push(listener)
+  const events = eventBus()
 
-  const observers = []
-  const addObserver = obs => observers.push(obs)
+  const quarterEvents = eventBus()
 
   const tempo = {
     value: defaultTempo,
@@ -22,8 +21,10 @@ const Clock = (context, defaultTempo = 120) => {
     currentNote = currentNote === 63 ? 0 : currentNote + 1
     nextNoteTime += 60 / tempo.value / 2
 
-    // tmp sequencer
-    observers.map(obs => obs.trigger(time))
+    // Trigger Quarter Notes
+    if (currentNote % 4 === 0) {
+      quarterEvents.trigger(time)
+    }
   }
 
   const start = () => {
@@ -45,16 +46,16 @@ const Clock = (context, defaultTempo = 120) => {
 
   const onChangeTempo = (value) => {
     tempo.value = value
-    listeners.forEach(listener => listener(value))
+    events.trigger(value)
   }
 
   return {
-    register,
+    register: events.listen,
     tempo,
     start,
     stop,
     onChangeTempo,
-    addObserver,
+    quarterEvents,
   }
 }
 
