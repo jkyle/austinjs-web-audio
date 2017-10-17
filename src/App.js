@@ -9,6 +9,7 @@ import Filter, { FilterDOM } from './Filter'
 import LFO, { LFODOM } from './LFO'
 import Clock, { ClockDOM } from './Clock'
 import Sequencer, { SequencerDOM } from './Sequencer'
+// import Delay, { DelayDOM } from './Delay'
 
 const context = new (window.AudioContext || window.webkitAudioContext)()
 const keyboard = Keyboard(context)
@@ -21,8 +22,11 @@ lfo.start(context.currentTime)
 keyboard.register(osc.start)
 
 const gain = context.createGain()
+// const delay = Delay(context)
+// delay.out.connect(gain)
+
 osc.gain.connect(filter.filter)
-filter.filter.connect(gain)
+// filter.filter.connect(delay.input)
 lfo.gain.connect(filter.filter.frequency)
 gain.connect(context.destination)
 gain.connect(timeAnalyser.analyser)
@@ -49,12 +53,15 @@ export default () => (
     <Device name="Oscillator">
       <MultiOscDOM device={osc} />
     </Device>
-    <Device name="Filter">
-      <FilterDOM device={filter} />
-    </Device>
     <Device name="LFO">
       <LFODOM device={lfo} max={500} />
     </Device>
+    <Device name="Filter">
+      <FilterDOM device={filter} />
+    </Device>
+    {/* <Device name="Delay">
+      <DelayDOM device={delay} />
+    </Device> */}
     <Device name="Time Analyser">
       <TimeAnalyserDOM device={timeAnalyser} />
     </Device>
