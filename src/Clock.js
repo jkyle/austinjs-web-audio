@@ -18,13 +18,13 @@ const Clock = (context, defaultTempo = 120) => {
   let interval
 
   const scheduleNote = (time) => {
-    currentNote = currentNote === 63 ? 0 : currentNote + 1
-    nextNoteTime += 60 / tempo.value / 2
-
     // Trigger Quarter Notes
     if (currentNote % 4 === 0) {
       quarterEvents.trigger(time)
     }
+
+    currentNote = currentNote === 63 ? 0 : currentNote + 1
+    nextNoteTime += 60 / tempo.value / 4
   }
 
   const start = () => {
