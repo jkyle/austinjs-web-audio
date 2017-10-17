@@ -58,7 +58,7 @@ const ADSR = (env = {
 
 const ADSRDOM = makeDevice(({ device }) => (
   <div className={style.components}>
-    <Knob min={0}
+    <Knob min={0.02}
       max={1}
       step={0.02}
       value={device.env.a}
@@ -79,7 +79,7 @@ const ADSRDOM = makeDevice(({ device }) => (
       onChange={value => device.onEnvChange('s', value)}
       label="SUS"
     />
-    <Knob min={0}
+    <Knob min={0.02}
       max={1}
       step={0.02}
       value={device.env.r}
