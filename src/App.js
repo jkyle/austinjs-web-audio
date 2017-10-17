@@ -27,7 +27,10 @@ const gain = context.createGain()
 
 osc.gain.connect(filter.filter)
 // filter.filter.connect(delay.input)
+<<<<<<< HEAD
 filter.filter.connect(gain)
+=======
+>>>>>>> 2e064b014191a4cb34e2d0a9c6ebde726bf44af3
 lfo.gain.connect(filter.filter.frequency)
 gain.connect(context.destination)
 gain.connect(timeAnalyser.analyser)
