@@ -4,11 +4,7 @@ import makeDevice from './Generic'
 import Knob from './Knob'
 import eventBus from './event-bus'
 
-const Oscillator = (
-  context,
-  type = 'sine',
-  // , adsr
-) => {
+const Oscillator = (context, type = 'sine', adsr) => {
   // This is for notifying React when values change.
   const events = eventBus()
 
@@ -28,21 +24,15 @@ const Oscillator = (
     osc.frequency.value = frequency
     osc.type = oscType.value
     osc.start(startTime)
-    tmpGain.gain.setValueAtTime(0.001, startTime)
-    tmpGain.gain.exponentialRampToValueAtTime(0.8, startTime + 0.02)
 
     // Attach tmpGain param to ADSR and schedule trigger
-    // const connectedADSR = adsr.addParam(tmpGain.gain).start(startTime)
+    const connectedADSR = adsr.addParam(tmpGain.gain).start(startTime)
 
     return {
       stop: (stopTime) => {
-        tmpGain.gain.setValueAtTime(0.8, stopTime - 0.02)
-        tmpGain.gain.exponentialRampToValueAtTime(0.001, stopTime)
-        osc.stop(stopTime)
-
         // Stop ADSR and schedule osc.stop
-        // connectedADSR.stop(stopTime)
-        // osc.stop(stopTime + adsr.env.s)
+        connectedADSR.stop(stopTime)
+        osc.stop(stopTime + adsr.env.s)
       },
     }
   }

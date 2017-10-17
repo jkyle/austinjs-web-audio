@@ -4,7 +4,7 @@ import Oscillator from './Oscillator'
 import makeDevice from './Generic'
 import Knob from './Knob'
 import eventBus from './event-bus'
-// import ADSR, { ADSRDOM } from './ADSR'
+import ADSR, { ADSRDOM } from './ADSR'
 
 const MultiOsc = (context) => {
   const events = eventBus()
@@ -13,16 +13,16 @@ const MultiOsc = (context) => {
 
   gain.gain.value = 0.3
 
-  // const adsr = ADSR({
-  //   a: 0.02,
-  //   d: 0,
-  //   s: 1,
-  //   r: 0.02,
-  // })
+  const adsr = ADSR({
+    a: 0.02,
+    d: 0,
+    s: 1,
+    r: 0.02,
+  })
 
-  const osc1 = Oscillator(context, 'square')
-  const osc2 = Oscillator(context, 'sawtooth')
-  const osc3 = Oscillator(context, 'triangle')
+  const osc1 = Oscillator(context, 'square', adsr)
+  const osc2 = Oscillator(context, 'sawtooth', adsr)
+  const osc3 = Oscillator(context, 'triangle', adsr)
 
   osc1.gain.connect(gain)
   osc2.gain.connect(gain)
@@ -58,7 +58,7 @@ const MultiOsc = (context) => {
     osc1,
     osc2,
     osc3,
-    // adsr,
+    adsr,
   }
 }
 
@@ -96,7 +96,7 @@ const MultiOscDOM = makeDevice(({ device }) => (
         onChange={value => device.onChangeOscGain(device.osc3, value)}
       />
     </div>
-    {/* <ADSRDOM device={device.adsr} /> */}
+    <ADSRDOM device={device.adsr} />
   </div>
 ))
 
