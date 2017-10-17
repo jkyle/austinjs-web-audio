@@ -11,20 +11,22 @@ import Clock, { ClockDOM } from './Clock'
 import Sequencer, { SequencerDOM } from './Sequencer'
 import Delay, { DelayDOM } from './Delay'
 import Distortion, { DistortionDOM } from './Distortion'
+import Detune, { DetuneDOM } from './Detune'
 
 const context = new (window.AudioContext || window.webkitAudioContext)()
 const keyboard = Keyboard(context)
-const timeAnalyser = TimeAnalyser(context)
-const freqAnalyser = FrequencyAnalyser(context)
 const filter = Filter(context)
 const osc = MultiOsc(context)
 const lfo = LFO(context)
 lfo.start(context.currentTime)
-keyboard.register(osc.start)
 
 const gain = context.createGain()
 const distortion = Distortion(context)
 distortion.shaper.connect(gain)
+
+const detune = Detune(context)
+detune.gain.connect(gain)
+keyboard.register(detune.start)
 
 const delay = Delay(context)
 delay.out.connect(distortion.shaper)
@@ -33,8 +35,6 @@ osc.gain.connect(filter.filter)
 filter.filter.connect(delay.input)
 lfo.gain.connect(filter.filter.frequency)
 gain.connect(context.destination)
-gain.connect(timeAnalyser.analyser)
-gain.connect(freqAnalyser.analyser)
 
 const clock = Clock(context)
 const sequencer = Sequencer(context)
@@ -47,6 +47,9 @@ export default () => (
   <div className={style.container}>
     <Device name="Keyboard">
       <KeyboardDOM device={keyboard} />
+    </Device>
+    <Device name="DetuneSynth">
+      <DetuneDOM device={detune} />
     </Device>
     <Device name="Clock">
       <ClockDOM device={clock} />
@@ -68,12 +71,6 @@ export default () => (
     </Device>
     <Device name="Distortion">
       <DistortionDOM device={distortion} />
-    </Device>
-    <Device name="Time Analyser">
-      <TimeAnalyserDOM device={timeAnalyser} />
-    </Device>
-    <Device name="Freq Analyser">
-      <FrequencyAnalyserDOM device={freqAnalyser} />
     </Device>
   </div>
 )

@@ -73,8 +73,6 @@ const DetuneDOM = makeDevice(({ device }) => (
         value={device.gain.gain.value}
         onChange={device.onChangeGain}
       />
-    </div>
-    <div className={style.components}>
       <Knob label="detune"
         min={0}
         max={10}
