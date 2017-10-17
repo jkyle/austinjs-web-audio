@@ -2,7 +2,6 @@ import React from 'react'
 import style from './style.styl'
 import Device from './Device'
 import MultiOsc, { MultiOscDOM } from './Multiosc'
-import Keyboard, { KeyboardDOM } from './Keyboard'
 import Filter, { FilterDOM } from './Filter'
 import LFO, { LFODOM } from './LFO'
 import Clock, { ClockDOM } from './Clock'
@@ -11,48 +10,46 @@ import Delay, { DelayDOM } from './Delay'
 import Distortion, { DistortionDOM } from './Distortion'
 import Detune, { DetuneDOM } from './Detune'
 import Mixer, { MixerDOM } from './Mixer'
+import { sample, freqFromRoot, times, range } from './music-math'
+
+const rootNoteSteps = sample([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11])
+const rootNote = freqFromRoot(440, rootNoteSteps)
+const buildSequence = notes => times(notes).map(() => sample([0, 5, 7, 9, 4]))
 
 const context = new (window.AudioContext || window.webkitAudioContext)()
 const filter = Filter(context, 'lowpass', 400)
-const osc = MultiOsc(context, 0, 0, 1)
-const mixer = Mixer(context, 0, 1)
+const osc = MultiOsc(context, range(0.2, 0.8), range(0.2, 0.8), range(0.2, 0.8))
+const mixer = Mixer(context, range(0.2, 0.8), range(0.2, 0.8))
 const lfo = LFO(context, 0.2, 300)
 lfo.start(context.currentTime)
 
 mixer.master.connect(context.destination)
-const distortion = Distortion(context)
+const distortion = Distortion(context, Math.floor(range(0, 50)))
 distortion.shaper.connect(mixer.input2)
 
-const detune = Detune(context)
-detune.gain.connect(mixer.input1)
+const delay = Delay(context, range(0.2, 0.8), range(0.2, 0.8), range(0, 0.2))
+delay.out.connect(mixer.input1)
 
-const delay = Delay(context, 0.2, 0.8, 0.5)
-delay.out.connect(distortion.shaper)
+const detune = Detune(context)
+detune.gain.connect(delay.input)
 
 osc.gain.connect(filter.filter)
-filter.filter.connect(delay.input)
+filter.filter.connect(distortion.shaper)
 lfo.gain.connect(filter.filter.frequency)
 
 const clock = Clock(context)
-const sequencer1 = Sequencer(context)
-const sequencer2 = Sequencer(context, 440, [
-  0,
-  7,
-  0,
-  7,
-  0,
-  5,
-  0,
-  5,
-  9,
-  5,
-  9,
-  5,
-  4,
-  7,
-  5,
-  -2,
-])
+const sequencer1 = Sequencer(
+  context,
+  rootNote / 4,
+  buildSequence(32),
+  range(0.2, 0.4),
+)
+const sequencer2 = Sequencer(
+  context,
+  rootNote / 2,
+  buildSequence(64),
+  range(0.5, 1),
+)
 
 clock.register(sequencer1.onTempoChange)
 clock.register(sequencer2.onTempoChange)
@@ -84,9 +81,6 @@ export default () => (
       <Device name="Filter">
         <FilterDOM device={filter} />
       </Device>
-      <Device name="Delay">
-        <DelayDOM device={delay} />
-      </Device>
       <Device name="Distortion">
         <DistortionDOM device={distortion} />
       </Device>
@@ -97,6 +91,9 @@ export default () => (
       </Device>
       <Device name="DetuneSynth">
         <DetuneDOM device={detune} />
+      </Device>
+      <Device name="Delay">
+        <DelayDOM device={delay} />
       </Device>
     </div>
   </div>
