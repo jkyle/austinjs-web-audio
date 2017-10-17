@@ -10,6 +10,7 @@ import LFO, { LFODOM } from './LFO'
 import Clock, { ClockDOM } from './Clock'
 import Sequencer, { SequencerDOM } from './Sequencer'
 import Delay, { DelayDOM } from './Delay'
+import Distortion, { DistortionDOM } from './Distortion'
 
 const context = new (window.AudioContext || window.webkitAudioContext)()
 const keyboard = Keyboard(context)
@@ -22,8 +23,11 @@ lfo.start(context.currentTime)
 keyboard.register(osc.start)
 
 const gain = context.createGain()
+const distortion = Distortion(context)
+distortion.shaper.connect(gain)
+
 const delay = Delay(context)
-delay.out.connect(gain)
+delay.out.connect(distortion.shaper)
 
 osc.gain.connect(filter.filter)
 filter.filter.connect(delay.input)
@@ -61,6 +65,9 @@ export default () => (
     </Device>
     <Device name="Delay">
       <DelayDOM device={delay} />
+    </Device>
+    <Device name="Distortion">
+      <DistortionDOM device={distortion} />
     </Device>
     <Device name="Time Analyser">
       <TimeAnalyserDOM device={timeAnalyser} />
