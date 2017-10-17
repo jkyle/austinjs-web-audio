@@ -12,7 +12,7 @@ import Detune, { DetuneDOM } from './Detune'
 import Mixer, { MixerDOM } from './Mixer'
 import { sample, freqFromRoot, times, range } from './music-math'
 
-const rootNoteSteps = sample([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11])
+const rootNoteSteps = sample([3])
 const rootNote = freqFromRoot(440, rootNoteSteps)
 const buildSequence = notes => times(notes).map(() => sample([0, 5, 7, 9, 4]))
 

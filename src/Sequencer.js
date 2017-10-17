@@ -3,7 +3,7 @@ import makeDevice from './Generic'
 import Knob from './Knob'
 import eventBus from './event-bus'
 
-import { freqFromRoot } from './music-math'
+import { freqFromRoot, sample } from './music-math'
 
 const Sequencer = (
   context,
@@ -42,7 +42,7 @@ const Sequencer = (
 
   const trigger = (time, division) => {
     noteOn
-      .trigger(time, steps[idx])
+      .trigger(time, steps[idx] * sample([0.5, 1, 2]))
       .map(osc => osc.stop(time + gate.value * division / (tempo.value / 60)))
 
     if (idx + 1 === steps.length) {
