@@ -40,7 +40,7 @@ const clock = Clock(context)
 const sequencer = Sequencer(context)
 
 clock.register(sequencer.onTempoChange)
-clock.quarterEvents.listen(sequencer.trigger)
+clock.eighthEvents.listen(sequencer.trigger)
 sequencer.noteOn.listen(osc.start)
 
 export default () => (

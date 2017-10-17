@@ -40,11 +40,16 @@ const ADSR = (env = {
         )
 
         return {
-          stop: stopTime =>
+          stop: (stopTime) => {
+            param.exponentialRampToValueAtTime(
+              offset.value + scale * env.s,
+              stopTime,
+            )
             param.exponentialRampToValueAtTime(
               offset.value + 0.002,
               stopTime + env.r,
-            ),
+            )
+          },
         }
       }
 
